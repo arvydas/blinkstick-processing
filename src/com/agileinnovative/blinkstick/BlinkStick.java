@@ -283,7 +283,9 @@ public class BlinkStick {
 	}
 
 	/** Find BlinkStick by serial number
+	 * 
 	 * @param serial	The serial number to search
+	 * 
 	 * @return			BlinkStick object or null if device was not found
 	 */
 	public static BlinkStick findBySerial(String serial) {
@@ -305,7 +307,9 @@ public class BlinkStick {
 		return null;
 	}
 
-	/** Find all BlinkStick HIDDeviceInfo descriptions connected to the computer
+	/** 
+	 * Find all BlinkStick HIDDeviceInfo descriptions connected to the computer
+	 * 
 	 * @return an array of HIDDeviceInfo objects with VID and PID matching BlinkStick
 	 */
 	private static HIDDeviceInfo[] findAllDescriptors() {
@@ -330,7 +334,9 @@ public class BlinkStick {
 		return blinkstickList.toArray(new HIDDeviceInfo[blinkstickList.size()]);
 	}
 
-	/** Find all BlinkSticks connected to the computer
+	/** 
+	 * Find all BlinkSticks connected to the computer
+	 * 
 	 * @return an array of BlinkStick objects
 	 */
 	public static BlinkStick[] findAll() {
@@ -350,8 +356,10 @@ public class BlinkStick {
 		return blinkstickList.toArray(new BlinkStick[blinkstickList.size()]);
 	}
 
-	/** Set the color of the device with separate r, g and b int values.
-	 * 	The values are automatically converted to byte values
+	/** 
+	 * Set the color of the device with separate r, g and b int values.
+	 * The values are automatically converted to byte values
+	 * 
 	 * @param r	red int color value 0..255
 	 * @param g gree int color value 0..255
 	 * @param b blue int color value 0..255
@@ -360,7 +368,9 @@ public class BlinkStick {
 		this.setColor((byte) r, (byte) g, (byte) b);
 	}
 
-	/** Set the color of the device with separate r, g and b byte values
+	/** 
+	 * Set the color of the device with separate r, g and b byte values
+	 * 
 	 * @param r	red byte color value 0..255
 	 * @param g gree byte color value 0..255
 	 * @param b blue byte color value 0..255
@@ -381,7 +391,9 @@ public class BlinkStick {
 		}
 	}
 	
-	/** Set the color of the device with Processing color value
+	/** 
+	 * Set the color of the device with Processing color value
+	 * 
 	 * @param value	color as int
 	 */
 	public void setColor(int value) {
@@ -392,9 +404,11 @@ public class BlinkStick {
         this.setColor(r, g, b);
 	}
 
-	/** Set the color of the device with string value
+	/** 
+	 * Set the color of the device with string value
+	 * 
 	 * @param value	this can either be a named color "red", "green", "blue" and etc.
-	 * 		or a hex color in #rrggbb format
+	 * 			or a hex color in #rrggbb format
 	 */
 	public void setColor(String value) {
 		if (COLORS.containsKey(value)) {
@@ -404,8 +418,11 @@ public class BlinkStick {
 		}
 	}
 
-	/** Convert hex string to color object
+	/** 
+	 * Convert hex string to color object
+	 * 
 	 * @param colorStr	Color value as hex string #rrggbb
+	 * 
 	 * @return			color object
 	 */
 	private int hex2Rgb(String colorStr) {
@@ -416,7 +433,9 @@ public class BlinkStick {
 		return (255 << 24) | (red << 16) | (green << 8) | blue;
 	}
 	
-	/** Get the current color of the device as int
+	/** 
+	 * Get the current color of the device as int
+	 * 
 	 * @return The current color of the device as int
 	 */
 	public int getColor() {
@@ -434,7 +453,9 @@ public class BlinkStick {
 		return 0;
 	}
 
-	/** Get value of InfoBlocks
+	/** 
+	 * Get value of InfoBlocks
+	 * 
 	 * @param id	InfoBlock id, should be 1 or 2 as only supported info blocks
 	 */
 	private String getInfoBlock(int id) {
@@ -459,14 +480,18 @@ public class BlinkStick {
 		return result;
 	}
 
-	/** Get value of InfoBlock1
+	/** 
+	 * Get value of InfoBlock1
+	 * 
 	 * @return The value of info block 1
 	 */
 	public String getInfoBlock1() {
 		return getInfoBlock(1);
 	}
 
-	/** Get value of InfoBlock2
+	/** 
+	 * Get value of InfoBlock2
+	 * 
 	 * @return The value of info block 2
 	 */
 	public String getInfoBlock2() {
@@ -474,7 +499,9 @@ public class BlinkStick {
 	}
 
 	
-	/** Set value for InfoBlocks
+	/** 
+	 * Set value for InfoBlocks
+	 * 
 	 * @param id	InfoBlock id, should be 1 or 2 as only supported info blocks
 	 * @param value	The value to be written to the info block
 	 */
@@ -499,21 +526,27 @@ public class BlinkStick {
 		}
 	}
 
-	/** Set value for InfoBlock1
+	/** 
+	 * Set value for InfoBlock1
+	 * 
 	 * @param value	The value to be written to the info block 1
 	 */
 	public void setInfoBlock1(String value) {
 		setInfoBlock(1, value);
 	}
 
-	/** Set value for InfoBlock2
+	/** 
+	 * Set value for InfoBlock2
+	 * 
 	 * @param value	The value to be written to the info block 2
 	 */
 	public void setInfoBlock2(String value) {
 		setInfoBlock(2, value);
 	}
 
-	/** Get the current color of the device in #rrggbb format 
+	/** 
+	 * Get the current color of the device in #rrggbb format 
+	 * 
 	 * @return Returns the current color of the device as #rrggbb formated string
 	 */
 	public String getColorString() {
@@ -529,8 +562,8 @@ public class BlinkStick {
 	}
 
 	
-	/** Set random color
-	 * 
+	/** 
+	 * Set random color
 	 */
 	public void setRandomColor() {
 		Random random = new Random();
@@ -540,15 +573,17 @@ public class BlinkStick {
 				random.nextInt(256));
 	}
 
-	/** Turn the device off
-	 * 
+	/** 
+	 * Turn the device off
 	 */
 	public void turnOff() {
 		this.setColor(0, 0, 0);
 	}
 
 	
-	/** Get the manufacturer of the device
+	/** 
+	 * Get the manufacturer of the device
+	 * 
 	 * @return Returns the manufacturer name of the device
 	 */
 	public String getManufacturer() {
@@ -559,7 +594,9 @@ public class BlinkStick {
 		}
 	}
 
-	/** Get the product description of the device
+	/** 
+	 * Get the product description of the device
+	 * 
 	 * @return Returns the product name of the device.
 	 */
 	public String getProduct() {
@@ -571,7 +608,9 @@ public class BlinkStick {
 	}
 
 	
-	/** Get the serial number of the device
+	/** 
+	 * Get the serial number of the device
+	 * 
 	 * @return Returns the serial number of device.
 	 */
 	public String getSerial() {
