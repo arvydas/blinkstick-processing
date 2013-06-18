@@ -1,0 +1,16 @@
+import com.agileinnovative.blinkstick.*;
+
+void setup() {
+  BlinkStick device = BlinkStick.findBySerial("BS000001-1.0");
+  
+  if (device == null)
+  {
+    println("Not found...");  
+  } 
+  else
+  {
+    println("BlinkStick found. Current color: " + device.getColorString());
+  }
+
+  noLoop();
+}
