@@ -36,7 +36,7 @@
  * @version     ##library.prettyVersion## (##library.version##)
  */
 
-package com.agileinnovative.blinkstick;
+package blinkstick;
 
 import com.codeminders.hidapi.HIDDeviceInfo;
 import com.codeminders.hidapi.HIDManager;
