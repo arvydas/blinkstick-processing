@@ -1,54 +1,62 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-<title>##library.name##</title>
-<meta name="description" content="A library for the Processing programming environment" />
-<meta name="keywords" content="processing.org, library, ##library.keywords##" />
-<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Language" content="en-us" />
-<meta name="ROBOTS" content="index,follow,archive" />
-<meta http-equiv="imagetoolbar" content="false" />
-<meta name="MSSmartTagsPreventParsing" content="true" />
-<meta name="author" content="##author.name##" />
-<meta name="Rating" content="General" />
-<meta name="revisit-after" content="7 Days" />
-<meta name="doc-class" content="Living Document" />
-<link rel="stylesheet" type="text/css" href="./stylesheet.css">
-</head>
-<body>
-	<div id="container">
-	
-		<div id="header">
-			<h1>##library.name##</h1>
-		</div>
-		
-		<div id="menu" class="clear">
-			<ul>
-				<li><a href="#about">About</a> \ </li>
-				<li><a href="#download">Download</a> \ </li>
-				<li><a href="#download">Installation</a> \ </li>
-				<li><a href="#examples">Examples</a> \ </li>
-				<li><a href="./reference/index.html" target="_blank">Reference</a></li>
-				<!-- <li><a href="#demos">Demos</a> \ </li> -->				
-				<!-- <li><a href="#misc">Misc</a> \ </li> -->
-				<!-- <li><a href="#images">Images</a> \ </li> -->
-			</ul>
-		</div>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Blinkstick Processing by arvydas</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/arvydas/blinkstick-processing">View On GitHub</a></li>
+          <li class="downloads"><a href="./download/##library.name##.zip">Download Library</a></li>
+          <li class="title">Download ##library.prettyVersion##</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>##library.name## Processing Library</h1>
+			<div id="menu" class="clear">
+				<ul>
+					<li><a href="#about">About</a> \ </li>
+					<li><a href="#download">Download</a> \ </li>
+					<li><a href="#download">Installation</a> \ </li>
+					<li><a href="#examples">Examples</a> \ </li>
+					<li><a href="./reference/index.html" target="_blank">Reference</a></li>
+				</ul>
+			</div>
+        </div>
+
 		
 		<div id="content" class="clear">
 			
 			<div id="about">
-			<h2>##library.name##</h2>
+			<h2>About</h2>
 			<p>
 			A library by <a href="##author.url##">##author.name##</a> for the <a href="http://www.processing.org" target="_blank">Processing</a> programming environment.<br>
 			Last update, ##date##.
 			</p>
 			<p>
-			##library.sentence##<br>
-			##library.paragraph##<br>
-			Feel free to replace this paragraph with a description of the library.<br>
-			Contributed libraries are developed, documented, and maintained by members of the Processing community. Further directions are included with each library. For feedback and support, please post to the Discourse. We strongly encourage all libraries to be open source, but not all of them are.
+			##library.sentence## ##library.paragraph##
+			</p>
+			<p>
+				BlinkStick is a DIY RGB USB device that plugs into your computer and allows control over the color. It's small, the size of a USB flash stick and designed to be easy to assemble.
+				You can find more details about it at <a href="http://www.blinkstick.com">www.blinkstick.com</a>.
 			</p>
 			</div>
 			
@@ -58,12 +66,75 @@
 			<h2>Download</h2>
 			<p>
 			Download ##library.name## version ##library.prettyVersion## (##library.version##) in 
-			<a href="./download/##library.name##-##library.version##.zip">.zip format</a>.
+			<a href="./download/##library.name##.zip">.zip format</a>.
 			</p>
+
 			<h2>Installation</h2>
 			<p>
 			Unzip and put the extracted ##library.name## folder into the libraries folder of your Processing sketches. Reference and examples are included in the ##library.name## folder.
 			</p>
+
+            <h3>Install with the "Add Library..." tool</h3>
+
+            <p>
+			New for Processing 2.0: Add contributed libraries by selecting "Add Library..." 
+			from the "Import Library..." submenu within the Sketch menu. Not all available 
+			libraries have been converted to show up in this menu. If a library isn't there,
+			it will need to be installed manually by following the instructions below.
+            </p>
+
+
+            <h3>Manual Install</h3>
+
+            <p>
+			Contributed libraries may be downloaded separately and manually placed within 
+			the "libraries" folder of your Processing sketchbook. To find (and change) the 
+			Processing sketchbook location on your computer, open the Preferences window 
+			from the Processing application (PDE) and look for the "Sketchbook location" 
+			item at the top.
+            </p>
+
+            <p>
+			Copy the contributed library's folder into the "libraries" folder at this 
+			location. You will need to create the "libraries" folder if this is your first 
+			contributed library.
+            </p>
+
+            <p>
+			By default the following locations are used for your sketchbook folder: 
+            </p>
+
+			<ul>
+				<li>For Mac users, the sketchbook folder is located inside ~/Documents/Processing.</li>
+				<li>For Windows users, the sketchbook folder is located inside 'My Documents'/Processing.</li>
+			</ul>
+
+            <p>
+			The folder structure for library ##library.name## should be as follows:
+            </p>
+
+<pre>
+Processing
+  libraries
+	##library.name##
+	  examples
+	  library
+		##library.name##.jar
+	  reference
+	  src
+</pre>
+								  
+            <p>
+			After library ##library.name## has been successfully installed, restart the Processing 
+			application.
+            </p>
+
+
+            <p>
+			If you're having trouble, have a look at the Processing Wiki for more 
+			information: <a href="http://wiki.processing.org/w/How_to_Install_a_Contributed_Library">http://wiki.processing.org/w/How_to_Install_a_Contributed_Library</a>
+            </p>
+
 			</div>	
 			
 			
@@ -96,42 +167,44 @@
 			<br /><strong>Dependencies</strong> ##library.dependencies##
 			</p>
 			</div>
-		
-			
-			<!-- use the demos section for a list of applets run in a browser. -->
-			<!--
-			<div id="demos" class="clear">
-				<h2>demos</h2>
-				<p>
-				find a list of online applet demos below.
-				
+
+			<div id="info">
+			<h2>Support</h2>
+			<p>
 				<ul>
-					<li><a href="./applets/demo/index.html">demo</a></li>
+					<li>
+						By email: 
+							<script type="text/javascript"><!--
+							var ldjigbc = ['i','o','t','a','i','/','l','a','.','a',':','"','.','t','i','n','i','c','l','i','n','m','"',' ','m','>','b','a','i','s','i','"','t','c','e','c','o','i','k','l','s',' ','k','m','b','l','n','k','c','r','f','<','o','l','c','=','>','n','h','o','"','o','a','m','e','=','f','<','s','f','@','@','k','s'];var eymxaod = [11,14,13,39,58,71,48,1,66,72,15,43,31,27,28,24,63,67,12,51,52,34,49,2,69,73,56,10,23,40,16,8,62,64,5,37,68,47,25,22,26,36,65,9,21,57,17,30,29,4,18,0,54,38,32,7,50,59,3,33,35,19,46,45,44,42,6,70,41,53,55,20,60,61];var ucyymqg= new Array();for(var i=0;i<eymxaod.length;i++){ucyymqg[eymxaod[i]] = ldjigbc[i]; }for(var i=0;i<ucyymqg.length;i++){document.write(ucyymqg[i]);}
+							// --></script>
+							<noscript>Please enable Javascript to see the email address</noscript>
+					</li>
+					<li>Found any bugs or need features? Please post them on the <a href="https://github.com/arvydas/blinkstick-processing/issues">issue tracker</a></li>
 				</ul>
-				</p>
-			</div>
-			-->
-			
-			<!-- use the misc section for other relevant information. Activate the link to the misc section in the menu above. -->
-			<!--
-			<div id="misc" class="clear">
-				<p></p>
-			</div>
-			-->
-			
-			<!-- use the images/screenshots section. Activate the link to the misc section in the menu above. -->
-			<!--
-			<div id="images" class="clear">
-			</div>
-			-->
-			
-			
+			</p>
+
+			<div id="maintainers">
+			<h2>Maintainer</h2>
+			<p>
+				Arvydas Juskevicius - <a href="http://twitter.com/arvydev">http://twitter.com/arvydev</a>
+			</p>
+
+			<div id="thanks">
+			<h2>Thanks</h2>
+			<ul>
+				<li><a href="https://github.com/signal11/hidapi">Hidapi</a> by Signal11 for an amazing cross platform C/C++ HID library.</li>
+				<li><a href="http://code.google.com/p/javahidapi/">JavaHidapi</a> by Codeminders for wrapping it up in Java.</li>
+			</ul>
+		
 			<br class="clear" />
 		</div>
-		
-		<div id="footer">
-			<p>by ##author.name##, ##copyright##.</p>
-		</div>
-	</div>
-</body>
+      </section>
+
+	  <hr>
+	  <span class="credits left">Project maintained by <a href="http://twitter.com/arvydev">Arvydas Juskevicius</a></span>
+	  <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
 </html>
