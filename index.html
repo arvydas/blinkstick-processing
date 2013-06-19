@@ -21,9 +21,8 @@
       <div id="header">
         <nav>
           <li class="fork"><a href="https://github.com/arvydas/blinkstick-processing">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/arvydas/blinkstick-processing/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/arvydas/blinkstick-processing/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
+          <li class="downloads"><a href="./download/BlinkStick.zip">Download Library</a></li>
+          <li class="title">Download 0.1.0</li>
         </nav>
       </div><!-- end header -->
 
@@ -31,17 +30,179 @@
 
       <section>
         <div id="title">
-          <h1>Blinkstick Processing</h1>
-          <p>BlinkStick interface to control devices connected to the computer with Processing.</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/arvydas">arvydas</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+          <h1>BlinkStick Processing Library</h1>
+			<div id="menu" class="clear">
+				<ul>
+					<li><a href="#about">About</a> \ </li>
+					<li><a href="#download">Download</a> \ </li>
+					<li><a href="#download">Installation</a> \ </li>
+					<li><a href="#examples">Examples</a> \ </li>
+					<li><a href="./reference/index.html" target="_blank">Reference</a></li>
+				</ul>
+			</div>
         </div>
 
-        <h3>
-<a name="welcome-to-blinkstick-processing" class="anchor" href="#welcome-to-blinkstick-processing"><span class="octicon octicon-link"></span></a>Welcome to BlinkStick Processing.</h3>
+		
+		<div id="content" class="clear">
+			
+			<div id="about">
+			<h2>About</h2>
+			<p>
+			A library by <a href="http://www.blinkstick.com">Arvydas Juskevicius</a> for the <a href="http://www.processing.org" target="_blank">Processing</a> programming environment.<br>
+			Last update, 06/19/2013.
+			</p>
+			<p>
+			Interface BlinkStick - a smart USB RGB LED. This library gives an ablity to control any number of BlinkStick devices from Processing.
+			</p>
+			<p>
+				BlinkStick is a DIY RGB USB device that plugs into your computer and allows control over the color. It's small, the size of a USB flash stick and designed to be easy to assemble.
+				You can find more details about it at <a href="http://www.blinkstick.com">www.blinkstick.com</a>.
+			</p>
+			</div>
+			
+			
+			
+			<div id="download" class="clear">
+			<h2>Download</h2>
+			<p>
+			Download BlinkStick version 0.1.0 (1) in 
+			<a href="./download/BlinkStick.zip">.zip format</a>.
+			</p>
+
+			<h2>Installation</h2>
+			<p>
+			Unzip and put the extracted BlinkStick folder into the libraries folder of your Processing sketches. Reference and examples are included in the BlinkStick folder.
+			</p>
+
+            <h3>Install with the "Add Library..." tool</h3>
+
+            <p>
+			New for Processing 2.0: Add contributed libraries by selecting "Add Library..." 
+			from the "Import Library..." submenu within the Sketch menu. Not all available 
+			libraries have been converted to show up in this menu. If a library isn't there,
+			it will need to be installed manually by following the instructions below.
+            </p>
+
+
+            <h3>Manual Install</h3>
+
+            <p>
+			Contributed libraries may be downloaded separately and manually placed within 
+			the "libraries" folder of your Processing sketchbook. To find (and change) the 
+			Processing sketchbook location on your computer, open the Preferences window 
+			from the Processing application (PDE) and look for the "Sketchbook location" 
+			item at the top.
+            </p>
+
+            <p>
+			Copy the contributed library's folder into the "libraries" folder at this 
+			location. You will need to create the "libraries" folder if this is your first 
+			contributed library.
+            </p>
+
+            <p>
+			By default the following locations are used for your sketchbook folder: 
+            </p>
+
+			<ul>
+				<li>For Mac users, the sketchbook folder is located inside ~/Documents/Processing.</li>
+				<li>For Windows users, the sketchbook folder is located inside 'My Documents'/Processing.</li>
+			</ul>
+
+            <p>
+			The folder structure for library BlinkStick should be as follows:
+            </p>
+
+<pre>
+Processing
+  libraries
+	BlinkStick
+	  examples
+	  library
+		BlinkStick.jar
+	  reference
+	  src
+</pre>
+								  
+            <p>
+			After library BlinkStick has been successfully installed, restart the Processing 
+			application.
+            </p>
+
+
+            <p>
+			If you're having trouble, have a look at the Processing Wiki for more 
+			information: <a href="http://wiki.processing.org/w/How_to_Install_a_Contributed_Library">http://wiki.processing.org/w/How_to_Install_a_Contributed_Library</a>
+            </p>
+
+			</div>	
+			
+			
+			<div id="resources">
+			<p><strong>Keywords</strong>. blinkstick,hardware,control</p>
+			<p><strong>Reference</strong>. Have a look at the javadoc reference <a href="./reference/index.html" target="_blank">here</a>. A copy of the reference is included in the .zip as well.</p>		
+			<p><strong>Source</strong>. The source code of BlinkStick is available at <a href="https://github.com/arvydas/blinkstick-processing/zipball/master">GitHub</a>, and its repository can be browsed <a href="http://github.com/arvydas/blinkstick-processing" target="_blank">here</a>.</p>			
+			</div>
+			
+			
+			<div id="examples" class="clear">
+			<h2>Examples</h2>
+			<p>Find a list of examples in the current distribution of BlinkStick, or have a look at them by following the links below.</p>
+			<ul>
+			<li><a href="examples/ColorPicker/ColorPicker.pde">ColorPicker</a></li> <li><a href="examples/FindAll/FindAll.pde">FindAll</a></li> <li><a href="examples/FindBySerialNumber/FindBySerialNumber.pde">FindBySerialNumber</a></li> <li><a href="examples/HelloWorld/HelloWorld.pde">HelloWorld</a></li> <li><a href="examples/InfoBlocks/InfoBlocks.pde">InfoBlocks</a></li> <li><a href="examples/Information/Information.pde">Information</a></li> <li><a href="examples/Pulse/Pulse.pde">Pulse</a></li> <li><a href="examples/RandomColor/RandomColor.pde">RandomColor</a></li> 
+			</ul>
+			</div>
+			
+			
+			<div id="info">
+			<h2>Tested</h2>
+			<p>
+			<!-- on which platform has the library been tested? -->
+			<strong>Platform</strong> osx,windows,linux
+			
+			<!-- which processing version did you use for testing your library? -->
+			<br /><strong>Processing</strong> 2.0
+			
+			<!-- does your library depend on any other library or framework? -->
+			<br /><strong>Dependencies</strong> none
+			</p>
+			</div>
+
+			<div id="info">
+			<h2>Support</h2>
+			<p>
+				<ul>
+					<li>
+						By email: 
+							<script type="text/javascript"><!--
+							var ldjigbc = ['i','o','t','a','i','/','l','a','.','a',':','"','.','t','i','n','i','c','l','i','n','m','"',' ','m','>','b','a','i','s','i','"','t','c','e','c','o','i','k','l','s',' ','k','m','b','l','n','k','c','r','f','<','o','l','c','=','>','n','h','o','"','o','a','m','e','=','f','<','s','f','@','@','k','s'];var eymxaod = [11,14,13,39,58,71,48,1,66,72,15,43,31,27,28,24,63,67,12,51,52,34,49,2,69,73,56,10,23,40,16,8,62,64,5,37,68,47,25,22,26,36,65,9,21,57,17,30,29,4,18,0,54,38,32,7,50,59,3,33,35,19,46,45,44,42,6,70,41,53,55,20,60,61];var ucyymqg= new Array();for(var i=0;i<eymxaod.length;i++){ucyymqg[eymxaod[i]] = ldjigbc[i]; }for(var i=0;i<ucyymqg.length;i++){document.write(ucyymqg[i]);}
+							// --></script>
+							<noscript>Please enable Javascript to see the email address</noscript>
+					</li>
+					<li>Found any bugs or need features? Please post them on the <a href="https://github.com/arvydas/blinkstick-processing/issues">issue tracker</a></li>
+				</ul>
+			</p>
+
+			<div id="maintainers">
+			<h2>Maintainer</h2>
+			<p>
+				Arvydas Juskevicius - <a href="http://twitter.com/arvydev">http://twitter.com/arvydev</a>
+			</p>
+
+			<div id="thanks">
+			<h2>Thanks</h2>
+			<ul>
+				<li><a href="https://github.com/signal11/hidapi">Hidapi</a> by Signal11 for an amazing cross platform C/C++ HID library.</li>
+				<li><a href="http://code.google.com/p/javahidapi/">JavaHidapi</a> by Codeminders for wrapping it up in Java.</li>
+			</ul>
+		
+			<br class="clear" />
+		</div>
       </section>
 
+	  <hr>
+	  <span class="credits left">Project maintained by <a href="http://twitter.com/arvydev">Arvydas Juskevicius</a></span>
+	  <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     

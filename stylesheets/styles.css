@@ -328,6 +328,18 @@ ul {
   padding: 0 0 0 40px;
 }
 
+#menu {
+	margin-top:16px;
+	margin-bottom:64px;
+} 
+
+#menu ul li, #subMenu ul li {
+	float:left;
+	padding-right:6px; 
+    list-style: none;
+}  
+
+
 /*
  * Corrects list images handled incorrectly in IE7
  */
@@ -848,4 +860,8 @@ section #title .credits.right {
   nav {
     display: none;
   }
+}
+
+.clear {
+clear: both;
 }
