@@ -6,7 +6,7 @@
  * Color picker code from http://www.julapy.com/processing/ColorPicker.pde 
  */
 
-import com.agileinnovative.blinkstick.*;
+import blinkstick.*;
 
 GuiColorPicker cp;
 BlinkStick blinkStick;

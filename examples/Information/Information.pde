@@ -5,7 +5,7 @@
  * current color, and info blocks.
  */
  
-import com.agileinnovative.blinkstick.*;
+import blinkstick.*;
 
 void setup() {
   BlinkStick device = BlinkStick.findFirst();

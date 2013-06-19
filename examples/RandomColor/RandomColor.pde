@@ -4,7 +4,7 @@
  * Basic example showing how to set random color.
  */
  
-import com.agileinnovative.blinkstick.*;
+import blinkstick.*;
 
 void setup() {
   BlinkStick device = BlinkStick.findFirst();

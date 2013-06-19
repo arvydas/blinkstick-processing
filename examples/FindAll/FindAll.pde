@@ -5,7 +5,7 @@
  * connected to the computer and print their serial numbers.
  */
  
-import com.agileinnovative.blinkstick.*;
+import blinkstick.*;
 
 void setup() {
   println("Listing all BlinkSticks:");

@@ -7,7 +7,7 @@
  * infoBlock2 - can contain any 32 bytes of data.
  */
 
-import com.agileinnovative.blinkstick.*;
+import blinkstick.*;
 
 void setup() {
   BlinkStick device = BlinkStick.findFirst();

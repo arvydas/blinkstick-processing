@@ -4,7 +4,7 @@
  * Basic example showing how to pulse red color.
  */
  
-import com.agileinnovative.blinkstick.*;
+import blinkstick.*;
 
 void setup() {
   BlinkStick device = BlinkStick.findFirst();
