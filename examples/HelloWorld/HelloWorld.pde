@@ -9,13 +9,15 @@
  * setColor(name)
  *     Sets the named color, for example "red", "green", "blue" and etc.
  *
- *	   Example: device.setColor("pink"); 
+ *     Example: 
+ *         device.setColor("pink"); 
  * 
  * setColor(r, g, b)
  *     Sets the color by r, g and b value. The values define the intensity of each
  *     RGB color element in the range from 0 to 255.
  *
- *     Example: device.setColor(255, 0, 0) sets red
+ *     Example: 
+ *         device.setColor(255, 0, 0) sets red
  *
  * setColor(color)
  *     Sets the color based on the Processing color functions
