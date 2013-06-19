@@ -419,6 +419,25 @@ public class BlinkStick {
 	}
 
 	/** 
+	 * Set random color
+	 */
+	public void setRandomColor() {
+		Random random = new Random();
+		this.setColor(
+				random.nextInt(256), 
+				random.nextInt(256),
+				random.nextInt(256));
+	}
+
+	/** 
+	 * Turn the device off
+	 */
+	public void turnOff() {
+		this.setColor(0, 0, 0);
+	}
+
+	
+	/** 
 	 * Convert hex string to color object
 	 * 
 	 * @param colorStr	Color value as hex string #rrggbb
@@ -451,6 +470,23 @@ public class BlinkStick {
 		}
 
 		return 0;
+	}
+
+	/** 
+	 * Get the current color of the device in #rrggbb format 
+	 * 
+	 * @return Returns the current color of the device as #rrggbb formated string
+	 */
+	public String getColorString() {
+		int c = getColor();
+		
+		int red   = (c >> 16) & 0xFF;
+		int green = (c >> 8)  & 0xFF;
+		int blue  =  c        & 0xFF;
+		
+		return "#" + String.format("%02X", red)
+				+ String.format("%02X", green)
+				+ String.format("%02X", blue);
 	}
 
 	/** 
@@ -544,43 +580,6 @@ public class BlinkStick {
 		setInfoBlock(2, value);
 	}
 
-	/** 
-	 * Get the current color of the device in #rrggbb format 
-	 * 
-	 * @return Returns the current color of the device as #rrggbb formated string
-	 */
-	public String getColorString() {
-		int c = getColor();
-		
-		int red   = (c >> 16) & 0xFF;
-		int green = (c >> 8)  & 0xFF;
-		int blue  =  c        & 0xFF;
-		
-		return "#" + String.format("%02X", red)
-				+ String.format("%02X", green)
-				+ String.format("%02X", blue);
-	}
-
-	
-	/** 
-	 * Set random color
-	 */
-	public void setRandomColor() {
-		Random random = new Random();
-		this.setColor(
-				random.nextInt(256), 
-				random.nextInt(256),
-				random.nextInt(256));
-	}
-
-	/** 
-	 * Turn the device off
-	 */
-	public void turnOff() {
-		this.setColor(0, 0, 0);
-	}
-
-	
 	/** 
 	 * Get the manufacturer of the device
 	 * 
