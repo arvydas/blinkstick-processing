@@ -38,13 +38,13 @@ void setup() {
   } 
   else
   {
-	device.setColor("red");
-	delay(1000);
-	device.setColor("green");
-	delay(1000);
-	device.setColor("blue");
-	delay(1000);
-	device.turnOff();
+    device.setColor("red");
+    delay(1000);
+    device.setColor("green");
+    delay(1000);
+    device.setColor("blue");
+    delay(1000);
+    device.turnOff();
   }
 
   noLoop();
