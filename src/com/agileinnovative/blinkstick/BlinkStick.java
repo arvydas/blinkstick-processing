@@ -393,7 +393,7 @@ public class BlinkStick {
 		data[1] = r;
 		data[2] = g;
 		data[3] = b;
-
+		
 		try {
 			device.sendFeatureReport(data);
 		} catch (Exception e) {
@@ -456,9 +456,9 @@ public class BlinkStick {
 	 * @return			color object
 	 */
 	private int hex2Rgb(String colorStr) {
-		byte red   = (byte) (Integer.valueOf(colorStr.substring(1, 3), 16) + 0);
-		byte green = (byte) (Integer.valueOf(colorStr.substring(3, 5), 16) + 0);
-		byte blue  = (byte) (Integer.valueOf(colorStr.substring(5, 7), 16) + 0);
+		int red   = Integer.valueOf(colorStr.substring(1, 3), 16)+ 0;
+		int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
+		int blue  = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
 
 		return (255 << 24) | (red << 16) | (green << 8) | blue;
 	}
