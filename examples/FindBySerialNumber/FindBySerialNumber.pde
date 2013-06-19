@@ -1,3 +1,9 @@
+/**
+ * FindBySerialNumber. 
+ * 
+ * Sample code demonstrating how to find BlinkStick by serial number. 
+ */
+ 
 import com.agileinnovative.blinkstick.*;
 
 void setup() {

@@ -1,8 +1,10 @@
 /**
- * Infoblocks are basic data that can be stored on the device. Each infoblock consists of 32 bytes. 
- * InfoBlock1 is used to store the name of the BlinkStick.
- * infoBlock2 can contain any 32 bytes of data
+ * InfoBlocks.
+ *
+ * Infoblocks are basic data that can be stored on the device. Each infoblock consists of 32 bytes.
  * 
+ * InfoBlock1 - used to store the name of the BlinkStick.
+ * infoBlock2 - can contain any 32 bytes of data.
  */
 
 import com.agileinnovative.blinkstick.*;

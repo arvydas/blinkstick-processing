@@ -1,3 +1,9 @@
+/**
+ * RandomColor.
+ *
+ * Basic example showing how to set random color.
+ */
+ 
 import com.agileinnovative.blinkstick.*;
 
 void setup() {

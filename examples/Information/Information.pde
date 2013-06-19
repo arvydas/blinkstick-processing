@@ -1,3 +1,10 @@
+/**
+ * Information.
+ *
+ * Prints all available information about BlinkStick like manufacturer, product name, serial number,
+ * current color, and info blocks.
+ */
+ 
 import com.agileinnovative.blinkstick.*;
 
 void setup() {

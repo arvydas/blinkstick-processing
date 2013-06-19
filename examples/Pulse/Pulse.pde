@@ -1,3 +1,9 @@
+/**
+ * Pulse.
+ *
+ * Basic example showing how to pulse red color.
+ */
+ 
 import com.agileinnovative.blinkstick.*;
 
 void setup() {

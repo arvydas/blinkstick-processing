@@ -1,4 +1,10 @@
-//Color picker code from http://www.julapy.com/processing/ColorPicker.pde
+/**
+ * ColorPicker. 
+ * 
+ * A basic color picker UI to change the color of BlinkStick.
+ *
+ * Color picker code from http://www.julapy.com/processing/ColorPicker.pde 
+ */
 
 import com.agileinnovative.blinkstick.*;
 
