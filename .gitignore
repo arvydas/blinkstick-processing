@@ -8,3 +8,5 @@
 distribution
 
 !lib/*.jar
+!resources/code/*.*
+/tmp
