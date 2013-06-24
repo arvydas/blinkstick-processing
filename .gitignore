@@ -6,3 +6,5 @@
 *.ear
 
 distribution
+
+!lib/*.jar
