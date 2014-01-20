@@ -1,3 +1,10 @@
+2014-01-20	Gerrit Kaul
+	  * version 0.5.2
+	  * changed loading and creating blink stick object
+	  * sorted methods
+	  * changed error handling
+	  * turn off closes the device
+
 2013-04-26  Elie Zananiri
       * version 0.5.1
       * updated wiki links 
