@@ -41,6 +41,8 @@ package blinkstick;
 import com.codeminders.hidapi.HIDDeviceInfo;
 import com.codeminders.hidapi.HIDManager;
 import com.codeminders.hidapi.HIDDevice;
+
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.List;
@@ -61,18 +63,27 @@ import java.util.ArrayList;
 
 /**
  * @author Arvydas
- *
+ * 
  */
 public class BlinkStick {
+	/**
+	 * BlinkStick library version
+	 */
+	public static final String VERSION = "##library.prettyVersion##";
 
-	public final static String VERSION = "##library.prettyVersion##";
-	
+	/**
+	 * BlinkStick vendor ID
+	 */
+	public static final int VENDOR_ID = 0x20a0;
+
+	/**
+	 * BlinkStick product ID
+	 */
+	public static final int PRODUCT_ID = 0x41e5;
+
 	private static Boolean Initialized = false;
 
 	private static final Hashtable<String, String> COLORS = new Hashtable<String, String>() {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
 		{
@@ -227,19 +238,360 @@ public class BlinkStick {
 	};
 
 	/**
-	 * BlinkStick vendor ID 
-	 */
-	public final static int VENDOR_ID = 0x20a0;
-	
-	/**
-	 * BlinkStick product ID 
-	 */
-	public final static int PRODUCT_ID = 0x41e5;
-
-	/** 
 	 * HID device object to communicate directly with BlinkStick
 	 */
 	private HIDDevice device = null;
+
+	/**
+	 * If the device is already closed
+	 */
+	private boolean closed = false;
+
+	/**
+	 * Instantiates a new blink stick.
+	 * 
+	 * @param device
+	 *            the device
+	 */
+	public BlinkStick(HIDDevice device) {
+		if(device == null) throw new IllegalArgumentException("device can not be null");
+
+		this.device = device;
+	}
+
+	/**
+	 * Set the color of the device with separate r, g and b int values. The
+	 * values are automatically converted to byte values
+	 * 
+	 * @param r
+	 *            red int color value 0..255
+	 * @param g
+	 *            gree int color value 0..255
+	 * @param b
+	 *            blue int color value 0..255
+	 */
+	public void setColor(int r, int g, int b) {
+		this.setColor((byte) r, (byte) g, (byte) b);
+	}
+
+	/**
+	 * Set the color of the device with separate r, g and b byte values
+	 * 
+	 * @param r
+	 *            red byte color value 0..255
+	 * @param g
+	 *            gree byte color value 0..255
+	 * @param b
+	 *            blue byte color value 0..255
+	 */
+	public void setColor(byte r, byte g, byte b) {
+		byte[] data = new byte[4];
+
+		data[0] = 1;
+		data[1] = r;
+		data[2] = g;
+		data[3] = b;
+
+		try {
+			device.sendFeatureReport(data);
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			} else if(this.getColor() != ((255 << 24) | (r << 16) | (g << 8) | b)) { // checks if the color has been changed successfully
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Set the color of the device with Processing color value
+	 * 
+	 * @param value
+	 *            color as int
+	 */
+	public void setColor(int value) {
+		int r = (value >> 16) & 0xFF;
+		int g = (value >> 8) & 0xFF;
+		int b = value & 0xFF;
+
+		this.setColor(r, g, b);
+	}
+
+	/**
+	 * Set the color of the device with string value
+	 * 
+	 * @param value
+	 *            this can either be a named color "red", "green", "blue" and
+	 *            etc. or a hex color in #rrggbb format
+	 */
+	public void setColor(String value) {
+		if(COLORS.containsKey(value)) {
+			this.setColor(hex2Rgb(COLORS.get(value)));
+		} else {
+			this.setColor(hex2Rgb(value));
+		}
+	}
+
+	/**
+	 * Set random color
+	 */
+	public void setRandomColor() {
+		Random random = new Random();
+		this.setColor(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+	}
+
+	/**
+	 * Get the current color of the device as int
+	 * 
+	 * @return The current color of the device as int
+	 */
+	public int getColor() {
+		byte[] data = new byte[33];
+		data[0] = 1;// First byte is ReportID
+
+		try {
+			int read = device.getFeatureReport(data);
+			if(read > 0) {
+				return (255 << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Get the current color of the device in #rrggbb format
+	 * 
+	 * @return Returns the current color of the device as #rrggbb formatted
+	 *         string
+	 */
+	public String getColorString() {
+		int c = getColor();
+
+		int red = (c >> 16) & 0xFF;
+		int green = (c >> 8) & 0xFF;
+		int blue = c & 0xFF;
+
+		return "#" + String.format("%02X", red) + String.format("%02X", green) + String.format("%02X", blue);
+	}
+
+	/**
+	 * Turn the device off
+	 */
+	public void turnOff() {
+		this.setColor(0, 0, 0);
+
+		try {
+			device.close();
+			closed = true;
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			} else {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Disconnects the device. The device does not turn off.
+	 */
+	public void disconnect() {
+		try {
+			device.close();
+			closed = true;
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			} else {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Get value of InfoBlock1
+	 * 
+	 * @return The value of info block 1
+	 */
+	public String getInfoBlock1() {
+		return getInfoBlock(1);
+	}
+
+	/**
+	 * Set value for InfoBlock1
+	 * 
+	 * @param value
+	 *            The value to be written to the info block 1
+	 */
+	public void setInfoBlock1(String value) {
+		setInfoBlock(1, value);
+	}
+
+	/**
+	 * Get value of InfoBlock2
+	 * 
+	 * @return The value of info block 2
+	 */
+	public String getInfoBlock2() {
+		return getInfoBlock(2);
+	}
+
+	/**
+	 * Set value for InfoBlock2
+	 * 
+	 * @param value
+	 *            The value to be written to the info block 2
+	 */
+	public void setInfoBlock2(String value) {
+		setInfoBlock(2, value);
+	}
+
+	/**
+	 * Get the manufacturer of the device
+	 * 
+	 * @return Returns the manufacturer name of the device
+	 */
+	public String getManufacturer() {
+		try {
+			return device.getManufacturerString();
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			}
+
+			return "";
+		}
+	}
+
+	/**
+	 * Get the product description of the device
+	 * 
+	 * @return Returns the product name of the device.
+	 */
+	public String getProduct() {
+		try {
+			return device.getProductString();
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			}
+
+			return "";
+		}
+	}
+
+	/**
+	 * Get the serial number of the device
+	 * 
+	 * @return Returns the serial number of device.
+	 */
+	public String getSerial() {
+		try {
+			return device.getSerialNumberString();
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			}
+
+			return "";
+		}
+	}
+
+	/**
+	 * Checks if the device is already closed.
+	 * 
+	 * @return true, if is closed
+	 */
+	public boolean isClosed() {
+		return closed;
+	}
+
+	/*
+	 * PRIVATE METHODS
+	 */
+
+	/**
+	 * Convert hex string to color object
+	 * 
+	 * @param colorStr
+	 *            Color value as hex string #rrggbb
+	 * 
+	 * @return color object
+	 */
+	private int hex2Rgb(String colorStr) {
+		if(!colorStr.startsWith("#")) throw new IllegalArgumentException("color string must begin with '#'");
+
+		int red = Integer.valueOf(colorStr.substring(1, 3), 16) + 0;
+		int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
+		int blue = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
+
+		return (255 << 24) | (red << 16) | (green << 8) | blue;
+	}
+
+	/**
+	 * Set value for InfoBlocks
+	 * 
+	 * @param id
+	 *            InfoBlock id, should be 1 or 2 as only supported info blocks
+	 * @param value
+	 *            The value to be written to the info block
+	 */
+	private void setInfoBlock(int id, String value) {
+		char[] charArray = value.toCharArray();
+		byte[] data = new byte[33];
+		data[0] = (byte) (id + 1);
+
+		for(int i = 0; i < charArray.length; i++) {
+			if(i > 32) {
+				break;
+			}
+
+			data[i + 1] = (byte) charArray[i];
+		}
+
+		try {
+			device.sendFeatureReport(data);
+		} catch(Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	/**
+	 * Get value of InfoBlocks
+	 * 
+	 * @param id
+	 *            InfoBlock id, should be 1 or 2 as only supported info blocks
+	 */
+	private String getInfoBlock(int id) {
+		byte[] data = new byte[33];
+		data[0] = (byte) (id + 1);
+
+		String result = "";
+		try {
+			int read = device.getFeatureReport(data);
+			if(read > 0) {
+				for(int i = 1; i < data.length; i++) {
+					if(i == 0) {
+						break;
+					}
+
+					result += (char) data[i];
+				}
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	/*
+	 * STATIC METHODS
+	 */
 
 	/**
 	 * return the version of the library.
@@ -250,29 +602,19 @@ public class BlinkStick {
 		return VERSION;
 	}
 
-	/** 
-	 * Assign HIDDevice
-	 * 
-	 * @param device HID device object to communicate directly with BlinkStick
-	 */
-	private void setDevice(HIDDevice device) {
-		this.device = device;
-	}
-
-	/** 
-	 * Load hidapi library based on the OS. This function is automatically called whenever 
-	 * a search for BlinkStick is performed for the first time.
+	/**
+	 * Load hidapi library based on the OS. This function is automatically
+	 * called whenever a search for BlinkStick is performed for the first time.
 	 */
 	public static void Initialize() {
-		if (!Initialized) {
+		if(!Initialized) {
 			Initialized = true;
 
-			com.codeminders.hidapi.ClassPathLibraryLoader
-					.loadNativeHIDLibrary();
+			com.codeminders.hidapi.ClassPathLibraryLoader.loadNativeHIDLibrary();
 		}
 	}
 
-	/** 
+	/**
 	 * Find first BlinkStick connected to the computer
 	 * 
 	 * @return BlinkStick object or null if no BlinkSticks are connected
@@ -282,35 +624,43 @@ public class BlinkStick {
 
 		HIDDeviceInfo[] infos = findAllDescriptors();
 
-		if (infos.length > 0) {
-			BlinkStick result = new BlinkStick();
+		if(infos.length > 0) {
 			try {
-				result.setDevice(infos[0].open());
-				return result;
-			} catch (Exception e) {
+				HIDDevice device = infos[0].open();
+
+				if(device != null) {
+					return new BlinkStick(device);
+				}
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return null;
 	}
 
-	/** Find BlinkStick by serial number
+	/**
+	 * Find BlinkStick by serial number
 	 * 
-	 * @param serial	The serial number to search
+	 * @param serial
+	 *            The serial number to search
 	 * 
-	 * @return			BlinkStick object or null if device was not found
+	 * @return BlinkStick object or null if device was not found
 	 */
 	public static BlinkStick findBySerial(String serial) {
 		Initialize();
 
 		HIDDeviceInfo[] infos = findAllDescriptors();
 
-		for (HIDDeviceInfo info : infos) {
-			if (info.getSerial_number().equals(serial)) {
-				BlinkStick result = new BlinkStick();
+		for(HIDDeviceInfo info : infos) {
+			if(info.getSerial_number().equals(serial)) {
 				try {
-					result.setDevice(infos[0].open());
-					return result;
-				} catch (Exception e) {
+					HIDDevice device = infos[0].open();
+
+					if(device != null) {
+						return new BlinkStick(device);
+					}
+				} catch(IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -318,10 +668,36 @@ public class BlinkStick {
 		return null;
 	}
 
-	/** 
+	/**
+	 * Find all BlinkSticks connected to the computer
+	 * 
+	 * @return an array of BlinkStick objects
+	 */
+	public static BlinkStick[] findAll() {
+		List<BlinkStick> blinkstickList = new ArrayList<BlinkStick>();
+
+		HIDDeviceInfo[] infos = findAllDescriptors();
+
+		for(HIDDeviceInfo info : infos) {
+			try {
+				HIDDevice device = info.open();
+
+				if(device != null) {
+					blinkstickList.add(new BlinkStick(device));
+				}
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return blinkstickList.toArray(new BlinkStick[blinkstickList.size()]);
+	}
+
+	/**
 	 * Find all BlinkStick HIDDeviceInfo descriptions connected to the computer
 	 * 
-	 * @return an array of HIDDeviceInfo objects with VID and PID matching BlinkStick
+	 * @return an array of HIDDeviceInfo objects with VID and PID matching
+	 *         BlinkStick
 	 */
 	private static HIDDeviceInfo[] findAllDescriptors() {
 		Initialize();
@@ -333,302 +709,15 @@ public class BlinkStick {
 
 			HIDDeviceInfo[] infos = hidManager.listDevices();
 
-			for (HIDDeviceInfo info : infos) {
-				if (info.getVendor_id() == VENDOR_ID
-						&& info.getProduct_id() == PRODUCT_ID) {
+			for(HIDDeviceInfo info : infos) {
+				if(info.getVendor_id() == VENDOR_ID && info.getProduct_id() == PRODUCT_ID) {
 					blinkstickList.add(info);
 				}
 			}
-		} catch (Exception e) {
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 
 		return blinkstickList.toArray(new HIDDeviceInfo[blinkstickList.size()]);
 	}
-
-	/** 
-	 * Find all BlinkSticks connected to the computer
-	 * 
-	 * @return an array of BlinkStick objects
-	 */
-	public static BlinkStick[] findAll() {
-		List<BlinkStick> blinkstickList = new ArrayList<BlinkStick>();
-
-		HIDDeviceInfo[] infos = findAllDescriptors();
-
-		for (HIDDeviceInfo info : infos) {
-			BlinkStick blinkstick = new BlinkStick();
-			try {
-				blinkstick.setDevice(info.open());
-				blinkstickList.add(blinkstick);
-			} catch (Exception e) {
-			}
-		}
-
-		return blinkstickList.toArray(new BlinkStick[blinkstickList.size()]);
-	}
-
-	/** 
-	 * Set the color of the device with separate r, g and b int values.
-	 * The values are automatically converted to byte values
-	 * 
-	 * @param r	red int color value 0..255
-	 * @param g gree int color value 0..255
-	 * @param b blue int color value 0..255
-	 */
-	public void setColor(int r, int g, int b) {
-		this.setColor((byte) r, (byte) g, (byte) b);
-	}
-
-	/** 
-	 * Set the color of the device with separate r, g and b byte values
-	 * 
-	 * @param r	red byte color value 0..255
-	 * @param g gree byte color value 0..255
-	 * @param b blue byte color value 0..255
-	 */
-	public void setColor(byte r, byte g, byte b) {
-		byte[] data = new byte[4];
-
-		data[0] = 1;
-		data[1] = r;
-		data[2] = g;
-		data[3] = b;
-		
-		try {
-			device.sendFeatureReport(data);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-	}
-	
-	/** 
-	 * Set the color of the device with Processing color value
-	 * 
-	 * @param value	color as int
-	 */
-	public void setColor(int value) {
-        int r = (value >> 16) & 0xFF;
-        int g = (value >> 8)  & 0xFF;
-        int b =  value        & 0xFF;
-        
-        this.setColor(r, g, b);
-	}
-
-	/** 
-	 * Set the color of the device with string value
-	 * 
-	 * @param value	this can either be a named color "red", "green", "blue" and etc.
-	 * 			or a hex color in #rrggbb format
-	 */
-	public void setColor(String value) {
-		if (COLORS.containsKey(value)) {
-			this.setColor(hex2Rgb(COLORS.get(value)));
-		} else {
-			this.setColor(hex2Rgb(value));
-		}
-	}
-
-	/** 
-	 * Set random color
-	 */
-	public void setRandomColor() {
-		Random random = new Random();
-		this.setColor(
-				random.nextInt(256), 
-				random.nextInt(256),
-				random.nextInt(256));
-	}
-
-	/** 
-	 * Turn the device off
-	 */
-	public void turnOff() {
-		this.setColor(0, 0, 0);
-	}
-
-	
-	/** 
-	 * Convert hex string to color object
-	 * 
-	 * @param colorStr	Color value as hex string #rrggbb
-	 * 
-	 * @return			color object
-	 */
-	private int hex2Rgb(String colorStr) {
-		int red   = Integer.valueOf(colorStr.substring(1, 3), 16)+ 0;
-		int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
-		int blue  = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
-
-		return (255 << 24) | (red << 16) | (green << 8) | blue;
-	}
-	
-	/** 
-	 * Get the current color of the device as int
-	 * 
-	 * @return The current color of the device as int
-	 */
-	public int getColor() {
-		byte[] data = new byte[33];
-		data[0] = 1;// First byte is ReportID
-
-		try {
-			int read = device.getFeatureReport(data);
-			if (read > 0) {
-				return (255 << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
-			}
-		} catch (Exception e) {
-		}
-
-		return 0;
-	}
-
-	/** 
-	 * Get the current color of the device in #rrggbb format 
-	 * 
-	 * @return Returns the current color of the device as #rrggbb formated string
-	 */
-	public String getColorString() {
-		int c = getColor();
-		
-		int red   = (c >> 16) & 0xFF;
-		int green = (c >> 8)  & 0xFF;
-		int blue  =  c        & 0xFF;
-		
-		return "#" + String.format("%02X", red)
-				+ String.format("%02X", green)
-				+ String.format("%02X", blue);
-	}
-
-	/** 
-	 * Get value of InfoBlocks
-	 * 
-	 * @param id	InfoBlock id, should be 1 or 2 as only supported info blocks
-	 */
-	private String getInfoBlock(int id) {
-		byte[] data = new byte[33];
-		data[0] = (byte) (id + 1);
-
-		String result = "";
-		try {
-			int read = device.getFeatureReport(data);
-			if (read > 0) {
-				for (int i = 1; i < data.length; i++) {
-					if (i == 0) {
-						break;
-					}
-
-					result += (char) data[i];
-				}
-			}
-		} catch (Exception e) {
-		}
-
-		return result;
-	}
-
-	/** 
-	 * Get value of InfoBlock1
-	 * 
-	 * @return The value of info block 1
-	 */
-	public String getInfoBlock1() {
-		return getInfoBlock(1);
-	}
-
-	/** 
-	 * Get value of InfoBlock2
-	 * 
-	 * @return The value of info block 2
-	 */
-	public String getInfoBlock2() {
-		return getInfoBlock(2);
-	}
-
-	
-	/** 
-	 * Set value for InfoBlocks
-	 * 
-	 * @param id	InfoBlock id, should be 1 or 2 as only supported info blocks
-	 * @param value	The value to be written to the info block
-	 */
-	private void setInfoBlock(int id, String value) {
-		char[] charArray = value.toCharArray();
-		byte[] data = new byte[33];
-		data[0] = (byte) (id + 1);
-
-		for (int i = 0; i < charArray.length; i++) {
-			if (i > 32) {
-				break;
-			}
-
-			data[i + 1] = (byte) charArray[i];
-		}
-
-		try {
-			device.sendFeatureReport(data);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-	}
-
-	/** 
-	 * Set value for InfoBlock1
-	 * 
-	 * @param value	The value to be written to the info block 1
-	 */
-	public void setInfoBlock1(String value) {
-		setInfoBlock(1, value);
-	}
-
-	/** 
-	 * Set value for InfoBlock2
-	 * 
-	 * @param value	The value to be written to the info block 2
-	 */
-	public void setInfoBlock2(String value) {
-		setInfoBlock(2, value);
-	}
-
-	/** 
-	 * Get the manufacturer of the device
-	 * 
-	 * @return Returns the manufacturer name of the device
-	 */
-	public String getManufacturer() {
-		try {
-			return device.getManufacturerString();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
-	/** 
-	 * Get the product description of the device
-	 * 
-	 * @return Returns the product name of the device.
-	 */
-	public String getProduct() {
-		try {
-			return device.getProductString();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
-	
-	/** 
-	 * Get the serial number of the device
-	 * 
-	 * @return Returns the serial number of device.
-	 */
-	public String getSerial() {
-		try {
-			return device.getSerialNumberString();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
 }
