@@ -394,7 +394,23 @@ public class BlinkStick {
 			}
 		}
 	}
-
+	
+	/**
+	 * Disconnects the device. The device does not turn off.
+	 */
+	public void disconnect() {
+		try {
+			device.close();
+			closed = true;
+		} catch(IOException e) {
+			if(isClosed()) {
+				System.err.println("device is already closed!");
+			} else {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/**
 	 * Get value of InfoBlock1
 	 * 
