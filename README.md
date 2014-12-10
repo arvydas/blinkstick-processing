@@ -1,11 +1,10 @@
-BlinkStick Processing
-=====================
+![BlinkStick Processing](http://www.blinkstick.com/images/logos/blinkstick-processing.png)
 
 This is BlinkStick Processing Github repository. Please visit official BlinkStick for Processing website for more details:
 
 http://arvydas.github.io/blinkstick-processing/
 
-BlinkStick is a smart USB-Controlled LED Pixel. More information about it here:
+BlinkStick devices are smart LED controllers with integrated USB firmware. More information about them here:
 
 http://www.blinkstick.com
 
