@@ -387,21 +387,72 @@ public class BlinkStick {
 	 * @param b blue byte color value 0..255
 	 */
 	public void setColor(byte r, byte g, byte b) {
-		byte[] data = new byte[4];
-
-		data[0] = 1;
-		data[1] = r;
-		data[2] = g;
-		data[3] = b;
-		
-		try {
-			device.sendFeatureReport(data);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
+        try {
+            device.sendFeatureReport(new byte[] {1, r, g, b});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 	
+	/** 
+	 * Set indexed color of the device with separate r, g and b byte values for channel and LED index
+	 * 
+	 * @param channel	Channel (0 - R, 1 - G, 2 - B)
+	 * @param index	Index of the LED
+	 * @param r	red int color value 0..255
+	 * @param g gree int color value 0..255
+	 * @param b blue int color value 0..255
+	 */
+	public void setIndexedColor(int channel, int index, int r, int g, int b) {
+		this.setIndexedColor((byte)channel, (byte)index, (byte)r, (byte)g, (byte)b);
+	}
+	
+	/** 
+	 * Set indexed color of the device with separate r, g and b byte values for channel and LED index
+	 * 
+	 * @param channel	Channel (0 - R, 1 - G, 2 - B)
+	 * @param index	Index of the LED
+	 * @param r	red byte color value 0..255
+	 * @param g gree byte color value 0..255
+	 * @param b blue byte color value 0..255
+	 */
+	public void setIndexedColor(byte channel, byte index, byte r, byte g, byte b) {
+        try {
+            device.sendFeatureReport(new byte[] {5, channel, index, r, g, b});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	
+	/** 
+	 * Set the indexed color of BlinkStick Pro with Processing color value
+	 * 
+	 * @param channel	Channel (0 - R, 1 - G, 2 - B)
+	 * @param index	Index of the LED
+	 * @param value	color as int
+	 */
+	public void setIndexedColor(int channel, int index, int value) {
+        int r = (value >> 16) & 0xFF;
+        int g = (value >> 8)  & 0xFF;
+        int b =  value        & 0xFF;
+        
+        this.setIndexedColor(channel, index, r, g, b);
+	}
+
+	/** 
+	 * Set the indexed color of BlinkStick Pro with Processing color value for channel 0
+	 * 
+	 * @param index	Index of the LED
+	 * @param value	color as int
+	 */
+	public void setIndexedColor(int index, int value) {
+        int r = (value >> 16) & 0xFF;
+        int g = (value >> 8)  & 0xFF;
+        int b =  value        & 0xFF;
+        
+        this.setIndexedColor(0, index, r, g, b);
+	}
+
 	/** 
 	 * Set the color of the device with Processing color value
 	 * 
@@ -630,5 +681,168 @@ public class BlinkStick {
 			return "";
 		}
 	}
+	
 
+	/** 
+	 * Determine report id for the amount of data to be sent
+	 * 
+	 * @return Returns the report id
+	 */
+	private byte determineReportId(int length) {
+		byte reportId = 9;
+		//Automatically determine the correct report id to send the data to
+		if (length <= 8 * 3)
+		{
+            reportId = 6;
+		}
+		else if (length <= 16 * 3)
+		{
+            reportId = 7;
+		}
+		else if (length <= 32 * 3)
+		{
+            reportId = 8;
+		}
+		else if (length <= 64 * 3)
+		{
+            reportId = 9;
+		}
+		else if (length <= 128 * 3)
+		{
+            reportId = 10;
+		}
+		
+		return reportId;
+	}
+	
+	/** 
+	 * Determine the adjusted maximum amount of LED for the report
+	 * 
+	 * @return Returns the adjusted amount of LED data
+	 */
+	private byte determineMaxLeds(int length) {
+		byte maxLeds = 64;
+		//Automatically determine the correct report id to send the data to
+		if (length <= 8 * 3)
+		{
+            maxLeds = 8;
+		}
+		else if (length <= 16 * 3)
+		{
+            maxLeds = 16;
+		}
+		else if (length <= 32 * 3)
+		{
+            maxLeds = 32;
+		}
+		else if (length <= 64 * 3)
+		{
+            maxLeds = 64;
+		}
+		else if (length <= 128 * 3)
+		{
+            maxLeds = 64;
+		}
+		
+		return maxLeds;
+	}
+	
+	/** 
+	 * Send a packet of data to LEDs on channel 0 (R)
+	 * 
+	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
+	 */
+	public void setColors(byte[] colorData)
+	{
+		this.setColors((byte)0, colorData);
+	}
+	
+	/** 
+	 * Send a packet of data to LEDs
+	 * 
+	 * @param channel	Channel (0 - R, 1 - G, 2 - B)
+	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
+	 */
+	public void setColors(int channel, byte[] colorData)
+	{
+		this.setColors((byte)channel, colorData);
+	}
+
+	/** 
+	 * Send a packet of data to LEDs
+	 * 
+	 * @param channel	Channel (0 - R, 1 - G, 2 - B)
+	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
+	 */
+	public void setColors(byte channel, byte[] colorData)
+	{
+		byte leds = this.determineMaxLeds(colorData.length);
+		byte[] data = new byte[leds * 3 + 2];
+
+		data[0] = this.determineReportId(colorData.length);
+		data[1] = channel;
+		
+		
+		for (int i = 0; i < Math.min(colorData.length, data.length - 2); i++)
+		{
+            data[i + 2] = colorData[i];
+		}
+
+		for (int i = colorData.length + 2; i < data.length; i++)
+		{
+            data[i] = 0;
+		}
+		
+		try {
+			device.sendFeatureReport(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/** 
+	 * Set the mode of BlinkStick Pro as int
+	 * 
+	 * @param mode	0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
+	 */
+	public void setMode(int mode)
+	{
+		this.setMode((byte)mode);
+	}
+
+	/** 
+	 * Set the mode of BlinkStick Pro as byte
+	 * 
+	 * @param mode	0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
+	 */
+	public void setMode(byte mode)
+	{
+		try {
+			device.sendFeatureReport(new byte[] {4, mode});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/** 
+	 * Get the mode of BlinkStick Pro
+	 * 
+	 * @return 0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
+	 */
+	public byte getMode()
+	{
+		byte[] data = new byte[2];
+		data[0] = 4;// First byte is ReportID
+
+		try {
+			int read = device.getFeatureReport(data);
+			if (read > 0) {
+				return data[1];
+			}
+		} catch (Exception e) {
+		}
+
+		return -1;
+	}
+	
 }
