@@ -44,6 +44,7 @@ import com.codeminders.hidapi.HIDDevice;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class BlinkStick {
 
 	private static Boolean Initialized = false;
 
-	private static final Hashtable<String, String> COLORS = new Hashtable<String, String>() {
+	private static final Map<String, String> COLORS = new Hashtable<String, String>() {
 		/**
 		 * 
 		 */
@@ -228,6 +229,11 @@ public class BlinkStick {
 		}
 	};
 
+	/** 
+	 * HID device object to communicate directly with BlinkStick
+	 */
+	private HIDDevice device = null;
+
 	/**
 	 * BlinkStick vendor ID 
 	 */
@@ -243,7 +249,7 @@ public class BlinkStick {
 	 * 
 	 * @return Returns the adjusted amount of LED data
 	 */
-	private static byte determineMaxLeds(int length) {
+	private static byte determineMaxLeds(final int length) {
 		byte maxLeds = 64;
 		//Automatically determine the correct report id to send the data to
 		if (length <= 8 * 3)
@@ -275,7 +281,7 @@ public class BlinkStick {
 	 * 
 	 * @return Returns the report id
 	 */
-	private static byte determineReportId(int length) {
+	private static byte determineReportId(final int length) {
 		byte reportId = 9;
 		//Automatically determine the correct report id to send the data to
 		if (length <= 8 * 3)
@@ -309,12 +315,12 @@ public class BlinkStick {
 	 * @throws IOException 
 	 */
 	public static BlinkStick[] findAll() throws IOException {
-		List<BlinkStick> blinkstickList = new ArrayList<BlinkStick>();
+		final List<BlinkStick> blinkstickList = new ArrayList<BlinkStick>();
 
-		HIDDeviceInfo[] infos = findAllDescriptors();
+		final HIDDeviceInfo[] infos = findAllDescriptors();
 
-		for (HIDDeviceInfo info : infos) {
-			BlinkStick blinkstick = new BlinkStick();
+		for (final HIDDeviceInfo info : infos) {
+			final BlinkStick blinkstick = new BlinkStick();
 
 			blinkstick.setDevice(info.open());
 			blinkstickList.add(blinkstick);
@@ -332,13 +338,11 @@ public class BlinkStick {
 	private static HIDDeviceInfo[] findAllDescriptors() throws IOException {
 		Initialize();
 
-		List<HIDDeviceInfo> blinkstickList = new ArrayList<HIDDeviceInfo>();
+		final List<HIDDeviceInfo> blinkstickList = new ArrayList<HIDDeviceInfo>();
+		final HIDManager hidManager = HIDManager.getInstance();
+		final HIDDeviceInfo[] infos = hidManager.listDevices();
 
-		HIDManager hidManager = HIDManager.getInstance();
-
-		HIDDeviceInfo[] infos = hidManager.listDevices();
-
-		for (HIDDeviceInfo info : infos) {
+		for (final HIDDeviceInfo info : infos) {
 			if (info.getVendor_id() == VENDOR_ID
 					&& info.getProduct_id() == PRODUCT_ID) {
 				blinkstickList.add(info);
@@ -355,15 +359,14 @@ public class BlinkStick {
 	 * @return			BlinkStick object or null if device was not found
 	 * @throws IOException 
 	 */
-	public static BlinkStick findBySerial(String serial) throws IOException {
+	public static BlinkStick findBySerial(final String serial) throws IOException {
 		Initialize();
 
-		HIDDeviceInfo[] infos = findAllDescriptors();
+		final HIDDeviceInfo[] infos = findAllDescriptors();
 
-		for (HIDDeviceInfo info : infos) {
+		for (final HIDDeviceInfo info : infos) {
 			if (info.getSerial_number().equals(serial)) {
-				BlinkStick result = new BlinkStick();
-
+				final BlinkStick result = new BlinkStick();
 				result.setDevice(infos[0].open());
 				return result;
 			}
@@ -381,11 +384,10 @@ public class BlinkStick {
 	public static BlinkStick findFirst() throws IOException {
 		Initialize();
 
-		HIDDeviceInfo[] infos = findAllDescriptors();
+		final HIDDeviceInfo[] infos = findAllDescriptors();
 
 		if (infos.length > 0) {
-			BlinkStick result = new BlinkStick();
-
+			final BlinkStick result = new BlinkStick();
 			result.setDevice(infos[0].open());
 			return result;
 		}
@@ -400,10 +402,10 @@ public class BlinkStick {
 	 * 
 	 * @return			color object
 	 */
-	private static int hex2Rgb(String colorStr) {
-		int red   = Integer.valueOf(colorStr.substring(1, 3), 16)+ 0;
-		int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
-		int blue  = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
+	private static int hex2Rgb(final String colorStr) {
+		final int red   = Integer.valueOf(colorStr.substring(1, 3), 16)+ 0;
+		final int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
+		final int blue  = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
 
 		return (255 << 24) | (red << 16) | (green << 8) | blue;
 	}
@@ -431,21 +433,16 @@ public class BlinkStick {
 	}
 
 	/** 
-	 * HID device object to communicate directly with BlinkStick
-	 */
-	private HIDDevice device = null;
-
-	/** 
 	 * Get the current color of the device as int
 	 * 
 	 * @return The current color of the device as int
 	 * @throws IOException 
 	 */
 	public int getColor() throws IOException {
-		byte[] data = new byte[33];
+		final byte[] data = new byte[33];
 		data[0] = 1;// First byte is ReportID
 
-		int read = device.getFeatureReport(data);
+		final int read = device.getFeatureReport(data);
 		if (read > 0) {
 			return (255 << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
 		}
@@ -462,10 +459,10 @@ public class BlinkStick {
 	 * @param maxBrightness	Value 0-255
 	 * @return
 	 */
-	public static byte[] getColor(int r, int g, int b, int maxBrightness) {
+	public static byte[] getColor(final int r, final int g, final int b, final int maxBrightness) {
 		return getColor((byte) r, (byte) g, (byte) b, maxBrightness);
 	}
-	
+
 	/**
 	 * Adjust RGB values to a specified brightness.
 	 * 
@@ -475,14 +472,14 @@ public class BlinkStick {
 	 * @param brightness	Value 0-255.
 	 * @return
 	 */
-	public static byte[] getColor(byte r, byte g, byte b, int brightness) {
+	public static byte[] getColor(final byte r, final byte g, final byte b, final int brightness) {
 		final byte newR = remapColor(r, brightness);
 		final byte newG = remapColor(g, brightness);
 		final byte newB = remapColor(b, brightness);
 
 		return new byte[] {newR,newG,newB};
 	}
-	
+
 	/** 
 	 * Get the current color of the device in #rrggbb format 
 	 * 
@@ -490,11 +487,11 @@ public class BlinkStick {
 	 * @throws IOException 
 	 */
 	public String getColorString() throws IOException {
-		int c = getColor();
+		final int c = getColor();
 
-		int red   = (c >> 16) & 0xFF;
-		int green = (c >> 8)  & 0xFF;
-		int blue  =  c        & 0xFF;
+		final int red   = (c >> 16) & 0xFF;
+		final int green = (c >> 8)  & 0xFF;
+		final int blue  =  c        & 0xFF;
 
 		return "#" + String.format("%02X", red)
 				+ String.format("%02X", green)
@@ -507,13 +504,13 @@ public class BlinkStick {
 	 * @param id	InfoBlock id, should be 1 or 2 as only supported info blocks
 	 * @throws IOException 
 	 */
-	private String getInfoBlock(int id) throws IOException {
-		byte[] data = new byte[33];
+	private String getInfoBlock(final int id) throws IOException {
+		final byte[] data = new byte[33];
 		data[0] = (byte) (id + 1);
 
 		String result = "";
 
-		int read = device.getFeatureReport(data);
+		final int read = device.getFeatureReport(data);
 		if (read > 0) {
 			for (int i = 1; i < data.length; i++) {
 				if (i == 0) {
@@ -564,10 +561,10 @@ public class BlinkStick {
 	 * @throws IOException 
 	 */
 	public byte getMode() throws IOException {
-		byte[] data = new byte[2];
+		final byte[] data = new byte[2];
 		data[0] = 4;// First byte is ReportID
 
-		int read = device.getFeatureReport(data);
+		final int read = device.getFeatureReport(data);
 		if (read > 0) {
 			return data[1];
 		}
@@ -595,33 +592,32 @@ public class BlinkStick {
 		return device.getSerialNumberString();
 	}
 
-	private static byte remap(byte value, float leftMin, float leftMax, float rightMin, float rightMax)
-	{
+	private static byte remap(final byte value, final float leftMin, final float leftMax, final float rightMin, final float rightMax)	{
 		//Figure out how 'wide' each range is
-		float leftSpan = leftMax - leftMin;
-		float rightSpan = rightMax - rightMin;
-	
+		final float leftSpan = leftMax - leftMin;
+		final float rightSpan = rightMax - rightMin;
+
 		//Java does not have unsigned bytes, so we have to do some byte to int conversion
 		int valueInt = value;
 		if (valueInt < 0) {
 			valueInt = valueInt + 0xff;
 		}
-		
+
 		//Convert the left range into a 0-1 range (float)
-		float valueScaled = (valueInt - leftMin) / leftSpan;
-		
+		final float valueScaled = (valueInt - leftMin) / leftSpan;
+
 		//Convert the 0-1 range into a value in the right range.
 		valueInt = (int)(rightMin + (valueScaled * rightSpan));
-		
+
 		//Convert back to correct signed value before conversion to byte
 		if (valueInt > 127)	{
 			valueInt = valueInt - 0xff;
 		}
-		
+
 		return (byte)valueInt;
 	}
 
-	private static byte remapColor(byte value, float max_value) {
+	private static byte remapColor(final byte value, final float max_value) {
 		return remap(value, 0, 255, 0, max_value);
 	}
 
@@ -633,7 +629,7 @@ public class BlinkStick {
 	 * @param b blue byte color value 0..255
 	 * @throws IOException 
 	 */
-	public void setColor(byte r, byte g, byte b) throws IOException {
+	public void setColor(final byte r, final byte g, final byte b) throws IOException {
 		device.sendFeatureReport(new byte[] {1, r, g, b});
 	}
 
@@ -643,10 +639,10 @@ public class BlinkStick {
 	 * @param value	color as int
 	 * @throws IOException 
 	 */
-	public void setColor(int value) throws IOException {
-		int r = (value >> 16) & 0xFF;
-		int g = (value >> 8)  & 0xFF;
-		int b =  value        & 0xFF;
+	public void setColor(final int value) throws IOException {
+		final int r = (value >> 16) & 0xFF;
+		final int g = (value >> 8)  & 0xFF;
+		final int b =  value        & 0xFF;
 
 		this.setColor(r, g, b);
 	}
@@ -660,7 +656,7 @@ public class BlinkStick {
 	 * @param b blue int color value 0..255
 	 * @throws IOException 
 	 */
-	public void setColor(int r, int g, int b) throws IOException {
+	public void setColor(final int r, final int g, final int b) throws IOException {
 		this.setColor((byte) r, (byte) g, (byte) b);
 	}
 
@@ -671,7 +667,7 @@ public class BlinkStick {
 	 * 			or a hex color in #rrggbb format
 	 * @throws IOException 
 	 */
-	public void setColor(String value) throws IOException {
+	public void setColor(final String value) throws IOException {
 		if (COLORS.containsKey(value)) {
 			this.setColor(hex2Rgb(COLORS.get(value)));
 		} else {
@@ -686,9 +682,9 @@ public class BlinkStick {
 	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 * @throws IOException 
 	 */
-	public void setColors(byte channel, byte[] colorData) throws IOException {
-		byte leds = BlinkStick.determineMaxLeds(colorData.length);
-		byte[] data = new byte[leds * 3 + 2];
+	public void setColors(final byte channel, final byte[] colorData) throws IOException {
+		final byte leds = BlinkStick.determineMaxLeds(colorData.length);
+		final byte[] data = new byte[leds * 3 + 2];
 
 		data[0] = BlinkStick.determineReportId(colorData.length);
 		data[1] = channel;
@@ -713,7 +709,7 @@ public class BlinkStick {
 	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 * @throws IOException 
 	 */
-	public void setColors(byte[] colorData) throws IOException {
+	public void setColors(final byte[] colorData) throws IOException {
 		this.setColors((byte)0, colorData);
 	}
 
@@ -724,7 +720,7 @@ public class BlinkStick {
 	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 * @throws IOException 
 	 */
-	public void setColors(int channel, byte[] colorData) throws IOException {
+	public void setColors(final int channel, final byte[] colorData) throws IOException {
 		this.setColors((byte)channel, colorData);
 	}
 
@@ -733,7 +729,7 @@ public class BlinkStick {
 	 * 
 	 * @param device HID device object to communicate directly with BlinkStick
 	 */
-	private void setDevice(HIDDevice device) {
+	private void setDevice(final HIDDevice device) {
 		this.device = device;
 	}
 
@@ -747,7 +743,7 @@ public class BlinkStick {
 	 * @param b blue byte color value 0..255
 	 * @throws IOException 
 	 */
-	public void setIndexedColor(byte channel, byte index, byte r, byte g, byte b) throws IOException {
+	public void setIndexedColor(final byte channel, final byte index, final byte r, final byte g, final byte b) throws IOException {
 		device.sendFeatureReport(new byte[] {5, channel, index, r, g, b});
 	}
 
@@ -758,10 +754,10 @@ public class BlinkStick {
 	 * @param value	color as int
 	 * @throws IOException 
 	 */
-	public void setIndexedColor(int index, int value) throws IOException {
-		int r = (value >> 16) & 0xFF;
-		int g = (value >> 8)  & 0xFF;
-		int b =  value        & 0xFF;
+	public void setIndexedColor(final int index, final int value) throws IOException {
+		final int r = (value >> 16) & 0xFF;
+		final int g = (value >> 8)  & 0xFF;
+		final int b =  value        & 0xFF;
 
 		this.setIndexedColor(0, index, r, g, b);
 	}
@@ -774,10 +770,10 @@ public class BlinkStick {
 	 * @param value	color as int
 	 * @throws IOException 
 	 */
-	public void setIndexedColor(int channel, int index, int value) throws IOException {
-		int r = (value >> 16) & 0xFF;
-		int g = (value >> 8)  & 0xFF;
-		int b =  value        & 0xFF;
+	public void setIndexedColor(final int channel, final int index, final int value) throws IOException {
+		final int r = (value >> 16) & 0xFF;
+		final int g = (value >> 8)  & 0xFF;
+		final int b =  value        & 0xFF;
 
 		this.setIndexedColor(channel, index, r, g, b);
 	}
@@ -792,7 +788,7 @@ public class BlinkStick {
 	 * @param b blue int color value 0..255
 	 * @throws IOException 
 	 */
-	public void setIndexedColor(int channel, int index, int r, int g, int b) throws IOException {
+	public void setIndexedColor(final int channel, final int index, final int r, final int g, final int b) throws IOException {
 		this.setIndexedColor((byte)channel, (byte)index, (byte)r, (byte)g, (byte)b);
 	}
 
@@ -803,9 +799,9 @@ public class BlinkStick {
 	 * @param value	The value to be written to the info block
 	 * @throws IOException 
 	 */
-	private void setInfoBlock(int id, String value) throws IOException {
-		char[] charArray = value.toCharArray();
-		byte[] data = new byte[33];
+	private void setInfoBlock(final int id, final String value) throws IOException {
+		final char[] charArray = value.toCharArray();
+		final byte[] data = new byte[33];
 		data[0] = (byte) (id + 1);
 
 		for (int i = 0; i < charArray.length; i++) {
@@ -825,7 +821,7 @@ public class BlinkStick {
 	 * @param value	The value to be written to the info block 1
 	 * @throws IOException 
 	 */
-	public void setInfoBlock1(String value) throws IOException {
+	public void setInfoBlock1(final String value) throws IOException {
 		setInfoBlock(1, value);
 	}
 
@@ -835,7 +831,7 @@ public class BlinkStick {
 	 * @param value	The value to be written to the info block 2
 	 * @throws IOException 
 	 */
-	public void setInfoBlock2(String value) throws IOException {
+	public void setInfoBlock2(final String value) throws IOException {
 		setInfoBlock(2, value);
 	}
 
@@ -845,7 +841,7 @@ public class BlinkStick {
 	 * @param mode	0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
 	 * @throws IOException 
 	 */
-	public void setMode(byte mode) throws IOException {
+	public void setMode(final byte mode) throws IOException {
 		device.sendFeatureReport(new byte[] {4, mode});
 
 	}
@@ -856,7 +852,7 @@ public class BlinkStick {
 	 * @param mode	0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
 	 * @throws IOException 
 	 */
-	public void setMode(int mode) throws IOException {
+	public void setMode(final int mode) throws IOException {
 		this.setMode((byte)mode);
 	}
 
@@ -865,7 +861,7 @@ public class BlinkStick {
 	 * @throws IOException 
 	 */
 	public void setRandomColor() throws IOException {
-		Random random = new Random();
+		final Random random = new Random();
 		this.setColor(
 				random.nextInt(256), 
 				random.nextInt(256),
