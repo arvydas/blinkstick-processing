@@ -453,6 +453,36 @@ public class BlinkStick {
 		return 0;
 	}
 
+	/**
+	 * Adjust RGB values to a specified brightness.
+	 * 
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param maxBrightness	Value 0-255
+	 * @return
+	 */
+	public static byte[] getColor(int r, int g, int b, int maxBrightness) {
+		return getColor((byte) r, (byte) g, (byte) b, maxBrightness);
+	}
+	
+	/**
+	 * Adjust RGB values to a specified brightness.
+	 * 
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param brightness	Value 0-255.
+	 * @return
+	 */
+	public static byte[] getColor(byte r, byte g, byte b, int brightness) {
+		final byte newR = remapColor(r, brightness);
+		final byte newG = remapColor(g, brightness);
+		final byte newB = remapColor(b, brightness);
+
+		return new byte[] {newR,newG,newB};
+	}
+	
 	/** 
 	 * Get the current color of the device in #rrggbb format 
 	 * 
@@ -563,6 +593,36 @@ public class BlinkStick {
 	 */
 	public String getSerial() throws IOException {
 		return device.getSerialNumberString();
+	}
+
+	private static byte remap(byte value, float leftMin, float leftMax, float rightMin, float rightMax)
+	{
+		//Figure out how 'wide' each range is
+		float leftSpan = leftMax - leftMin;
+		float rightSpan = rightMax - rightMin;
+	
+		//Java does not have unsigned bytes, so we have to do some byte to int conversion
+		int valueInt = value;
+		if (valueInt < 0) {
+			valueInt = valueInt + 0xff;
+		}
+		
+		//Convert the left range into a 0-1 range (float)
+		float valueScaled = (valueInt - leftMin) / leftSpan;
+		
+		//Convert the 0-1 range into a value in the right range.
+		valueInt = (int)(rightMin + (valueScaled * rightSpan));
+		
+		//Convert back to correct signed value before conversion to byte
+		if (valueInt > 127)	{
+			valueInt = valueInt - 0xff;
+		}
+		
+		return (byte)valueInt;
+	}
+
+	private static byte remapColor(byte value, float max_value) {
+		return remap(value, 0, 255, 0, max_value);
 	}
 
 	/** 
@@ -689,7 +749,6 @@ public class BlinkStick {
 	 */
 	public void setIndexedColor(byte channel, byte index, byte r, byte g, byte b) throws IOException {
 		device.sendFeatureReport(new byte[] {5, channel, index, r, g, b});
-
 	}
 
 	/** 
