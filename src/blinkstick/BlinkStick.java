@@ -66,7 +66,7 @@ import java.util.ArrayList;
 public class BlinkStick {
 
 	public final static String VERSION = "##library.prettyVersion##";
-	
+
 	private static Boolean Initialized = false;
 
 	private static final Hashtable<String, String> COLORS = new Hashtable<String, String>() {
@@ -230,7 +230,7 @@ public class BlinkStick {
 	 * BlinkStick vendor ID 
 	 */
 	public final static int VENDOR_ID = 0x20a0;
-	
+
 	/**
 	 * BlinkStick product ID 
 	 */
@@ -268,7 +268,7 @@ public class BlinkStick {
 			Initialized = true;
 
 			com.codeminders.hidapi.ClassPathLibraryLoader
-					.loadNativeHIDLibrary();
+			.loadNativeHIDLibrary();
 		}
 	}
 
@@ -387,13 +387,13 @@ public class BlinkStick {
 	 * @param b blue byte color value 0..255
 	 */
 	public void setColor(byte r, byte g, byte b) {
-        try {
-            device.sendFeatureReport(new byte[] {1, r, g, b});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		try {
+			device.sendFeatureReport(new byte[] {1, r, g, b});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	/** 
 	 * Set indexed color of the device with separate r, g and b byte values for channel and LED index
 	 * 
@@ -406,7 +406,7 @@ public class BlinkStick {
 	public void setIndexedColor(int channel, int index, int r, int g, int b) {
 		this.setIndexedColor((byte)channel, (byte)index, (byte)r, (byte)g, (byte)b);
 	}
-	
+
 	/** 
 	 * Set indexed color of the device with separate r, g and b byte values for channel and LED index
 	 * 
@@ -417,13 +417,13 @@ public class BlinkStick {
 	 * @param b blue byte color value 0..255
 	 */
 	public void setIndexedColor(byte channel, byte index, byte r, byte g, byte b) {
-        try {
-            device.sendFeatureReport(new byte[] {5, channel, index, r, g, b});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		try {
+			device.sendFeatureReport(new byte[] {5, channel, index, r, g, b});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	/** 
 	 * Set the indexed color of BlinkStick Pro with Processing color value
 	 * 
@@ -432,11 +432,11 @@ public class BlinkStick {
 	 * @param value	color as int
 	 */
 	public void setIndexedColor(int channel, int index, int value) {
-        int r = (value >> 16) & 0xFF;
-        int g = (value >> 8)  & 0xFF;
-        int b =  value        & 0xFF;
-        
-        this.setIndexedColor(channel, index, r, g, b);
+		int r = (value >> 16) & 0xFF;
+		int g = (value >> 8)  & 0xFF;
+		int b =  value        & 0xFF;
+
+		this.setIndexedColor(channel, index, r, g, b);
 	}
 
 	/** 
@@ -446,11 +446,11 @@ public class BlinkStick {
 	 * @param value	color as int
 	 */
 	public void setIndexedColor(int index, int value) {
-        int r = (value >> 16) & 0xFF;
-        int g = (value >> 8)  & 0xFF;
-        int b =  value        & 0xFF;
-        
-        this.setIndexedColor(0, index, r, g, b);
+		int r = (value >> 16) & 0xFF;
+		int g = (value >> 8)  & 0xFF;
+		int b =  value        & 0xFF;
+
+		this.setIndexedColor(0, index, r, g, b);
 	}
 
 	/** 
@@ -459,11 +459,11 @@ public class BlinkStick {
 	 * @param value	color as int
 	 */
 	public void setColor(int value) {
-        int r = (value >> 16) & 0xFF;
-        int g = (value >> 8)  & 0xFF;
-        int b =  value        & 0xFF;
-        
-        this.setColor(r, g, b);
+		int r = (value >> 16) & 0xFF;
+		int g = (value >> 8)  & 0xFF;
+		int b =  value        & 0xFF;
+
+		this.setColor(r, g, b);
 	}
 
 	/** 
@@ -498,7 +498,7 @@ public class BlinkStick {
 		this.setColor(0, 0, 0);
 	}
 
-	
+
 	/** 
 	 * Convert hex string to color object
 	 * 
@@ -513,7 +513,7 @@ public class BlinkStick {
 
 		return (255 << 24) | (red << 16) | (green << 8) | blue;
 	}
-	
+
 	/** 
 	 * Get the current color of the device as int
 	 * 
@@ -541,11 +541,11 @@ public class BlinkStick {
 	 */
 	public String getColorString() {
 		int c = getColor();
-		
+
 		int red   = (c >> 16) & 0xFF;
 		int green = (c >> 8)  & 0xFF;
 		int blue  =  c        & 0xFF;
-		
+
 		return "#" + String.format("%02X", red)
 				+ String.format("%02X", green)
 				+ String.format("%02X", blue);
@@ -596,7 +596,7 @@ public class BlinkStick {
 		return getInfoBlock(2);
 	}
 
-	
+
 	/** 
 	 * Set value for InfoBlocks
 	 * 
@@ -668,7 +668,7 @@ public class BlinkStick {
 		}
 	}
 
-	
+
 	/** 
 	 * Get the serial number of the device
 	 * 
@@ -681,7 +681,7 @@ public class BlinkStick {
 			return "";
 		}
 	}
-	
+
 
 	/** 
 	 * Determine report id for the amount of data to be sent
@@ -693,28 +693,28 @@ public class BlinkStick {
 		//Automatically determine the correct report id to send the data to
 		if (length <= 8 * 3)
 		{
-            reportId = 6;
+			reportId = 6;
 		}
 		else if (length <= 16 * 3)
 		{
-            reportId = 7;
+			reportId = 7;
 		}
 		else if (length <= 32 * 3)
 		{
-            reportId = 8;
+			reportId = 8;
 		}
 		else if (length <= 64 * 3)
 		{
-            reportId = 9;
+			reportId = 9;
 		}
 		else if (length <= 128 * 3)
 		{
-            reportId = 10;
+			reportId = 10;
 		}
-		
+
 		return reportId;
 	}
-	
+
 	/** 
 	 * Determine the adjusted maximum amount of LED for the report
 	 * 
@@ -725,28 +725,28 @@ public class BlinkStick {
 		//Automatically determine the correct report id to send the data to
 		if (length <= 8 * 3)
 		{
-            maxLeds = 8;
+			maxLeds = 8;
 		}
 		else if (length <= 16 * 3)
 		{
-            maxLeds = 16;
+			maxLeds = 16;
 		}
 		else if (length <= 32 * 3)
 		{
-            maxLeds = 32;
+			maxLeds = 32;
 		}
 		else if (length <= 64 * 3)
 		{
-            maxLeds = 64;
+			maxLeds = 64;
 		}
 		else if (length <= 128 * 3)
 		{
-            maxLeds = 64;
+			maxLeds = 64;
 		}
-		
+
 		return maxLeds;
 	}
-	
+
 	/** 
 	 * Send a packet of data to LEDs on channel 0 (R)
 	 * 
@@ -756,7 +756,7 @@ public class BlinkStick {
 	{
 		this.setColors((byte)0, colorData);
 	}
-	
+
 	/** 
 	 * Send a packet of data to LEDs
 	 * 
@@ -781,25 +781,25 @@ public class BlinkStick {
 
 		data[0] = this.determineReportId(colorData.length);
 		data[1] = channel;
-		
-		
+
+
 		for (int i = 0; i < Math.min(colorData.length, data.length - 2); i++)
 		{
-            data[i + 2] = colorData[i];
+			data[i + 2] = colorData[i];
 		}
 
 		for (int i = colorData.length + 2; i < data.length; i++)
 		{
-            data[i] = 0;
+			data[i] = 0;
 		}
-		
+
 		try {
 			device.sendFeatureReport(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** 
 	 * Set the mode of BlinkStick Pro as int
 	 * 
@@ -823,7 +823,7 @@ public class BlinkStick {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** 
 	 * Get the mode of BlinkStick Pro
 	 * 
@@ -844,5 +844,5 @@ public class BlinkStick {
 
 		return -1;
 	}
-	
+
 }
