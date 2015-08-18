@@ -739,8 +739,7 @@ public class BlinkStick {
 	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 * @throws IOException 
 	 */
-	public void setColors(byte[] colorData) throws IOException
-	{
+	public void setColors(byte[] colorData) throws IOException {
 		this.setColors((byte)0, colorData);
 	}
 
@@ -751,8 +750,7 @@ public class BlinkStick {
 	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 * @throws IOException 
 	 */
-	public void setColors(int channel, byte[] colorData) throws IOException
-	{
+	public void setColors(int channel, byte[] colorData) throws IOException {
 		this.setColors((byte)channel, colorData);
 	}
 
@@ -763,8 +761,7 @@ public class BlinkStick {
 	 * @param colorData	Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 * @throws IOException 
 	 */
-	public void setColors(byte channel, byte[] colorData) throws IOException
-	{
+	public void setColors(byte channel, byte[] colorData) throws IOException {
 		byte leds = this.determineMaxLeds(colorData.length);
 		byte[] data = new byte[leds * 3 + 2];
 
@@ -791,8 +788,7 @@ public class BlinkStick {
 	 * @param mode	0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
 	 * @throws IOException 
 	 */
-	public void setMode(int mode) throws IOException
-	{
+	public void setMode(int mode) throws IOException {
 		this.setMode((byte)mode);
 	}
 
@@ -802,8 +798,7 @@ public class BlinkStick {
 	 * @param mode	0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
 	 * @throws IOException 
 	 */
-	public void setMode(byte mode) throws IOException
-	{
+	public void setMode(byte mode) throws IOException {
 		device.sendFeatureReport(new byte[] {4, mode});
 
 	}
@@ -814,8 +809,7 @@ public class BlinkStick {
 	 * @return 0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
 	 * @throws IOException 
 	 */
-	public byte getMode() throws IOException
-	{
+	public byte getMode() throws IOException {
 		byte[] data = new byte[2];
 		data[0] = 4;// First byte is ReportID
 
