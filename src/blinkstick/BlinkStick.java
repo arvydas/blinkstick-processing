@@ -506,7 +506,7 @@ public class BlinkStick {
 	 * 
 	 * @return			color object
 	 */
-	private int hex2Rgb(String colorStr) {
+	private static int hex2Rgb(String colorStr) {
 		int red   = Integer.valueOf(colorStr.substring(1, 3), 16)+ 0;
 		int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
 		int blue  = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
@@ -674,7 +674,7 @@ public class BlinkStick {
 	 * 
 	 * @return Returns the report id
 	 */
-	private byte determineReportId(int length) {
+	private static byte determineReportId(int length) {
 		byte reportId = 9;
 		//Automatically determine the correct report id to send the data to
 		if (length <= 8 * 3)
@@ -706,7 +706,7 @@ public class BlinkStick {
 	 * 
 	 * @return Returns the adjusted amount of LED data
 	 */
-	private byte determineMaxLeds(int length) {
+	private static byte determineMaxLeds(int length) {
 		byte maxLeds = 64;
 		//Automatically determine the correct report id to send the data to
 		if (length <= 8 * 3)
@@ -762,10 +762,10 @@ public class BlinkStick {
 	 * @throws IOException 
 	 */
 	public void setColors(byte channel, byte[] colorData) throws IOException {
-		byte leds = this.determineMaxLeds(colorData.length);
+		byte leds = BlinkStick.determineMaxLeds(colorData.length);
 		byte[] data = new byte[leds * 3 + 2];
 
-		data[0] = this.determineReportId(colorData.length);
+		data[0] = BlinkStick.determineReportId(colorData.length);
 		data[1] = channel;
 
 
