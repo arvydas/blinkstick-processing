@@ -292,6 +292,16 @@ public class BlinkStick {
 		}
 		return null;
 	}
+		
+	/**
+	 * Close first BlinkStick connected to the computer
+	 */
+	public void closeFirst() {
+	    try {
+	        this.device.close();
+	    } catch (IOException e) {
+	    }
+	}
 
 	/** Find BlinkStick by serial number
 	 * 
